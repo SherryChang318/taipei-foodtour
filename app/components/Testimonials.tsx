@@ -96,7 +96,7 @@ export default function Testimonials() {
             type="button"
             aria-label="Previous testimonial"
             onClick={prev}
-            className="absolute left-0 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-full bg-amber-400 text-black text-sm lg:text-xl shadow-md hover:brightness-110 lg:flex"
+            className="hidden lg:flex absolute left-0 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 size-[60px] items-center justify-center rounded-full bg-white/70 text-3xl leading-none text-sage shadow-md ring-1 ring-black/5 transition-colors hover:bg-white"
           >
             &#8249;
           </button>
@@ -111,26 +111,44 @@ export default function Testimonials() {
             type="button"
             aria-label="Next testimonial"
             onClick={next}
-            className="absolute right-0 top-1/2 z-10 flex translate-x-1/2 -translate-y-1/2 h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-full bg-amber-400 text-black text-sm lg:text-xl shadow-md hover:brightness-110 lg:flex"
+            className="hidden lg:flex absolute right-0 top-1/2 z-10 translate-x-1/2 -translate-y-1/2 size-[60px] items-center justify-center rounded-full bg-white/70 text-3xl leading-none text-sage shadow-md ring-1 ring-black/5 transition-colors hover:bg-white"
           >
             &#8250;
           </button>
 
-          {/* Mobile / tablet: single centered card with dots */}
+          {/* Mobile / tablet: single centered card with dots and arrows */}
           <div className="mt-10 lg:hidden">
           <Card t={testimonials[center]} variant="center" />
-          <div className="mt-6 flex justify-center gap-2">
-            {testimonials.map((t, i) => (
-              <button
-                key={t.author}
-                type="button"
-                aria-label={`Show testimonial ${i + 1}`}
-                onClick={() => setCenter(i)}
-                className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                  i === center ? "bg-sage" : "bg-black/25"
-                }`}
-              />
-            ))}
+          <div className="mt-6 flex items-center justify-center gap-6">
+            <button
+              type="button"
+              aria-label="Previous testimonial"
+              onClick={prev}
+              className="flex size-[60px] items-center justify-center rounded-full bg-white/70 text-3xl leading-none text-sage shadow-md ring-1 ring-black/5 transition-colors hover:bg-white"
+            >
+              &#8249;
+            </button>
+            <div className="flex gap-2">
+              {testimonials.map((t, i) => (
+                <button
+                  key={t.author}
+                  type="button"
+                  aria-label={`Show testimonial ${i + 1}`}
+                  onClick={() => setCenter(i)}
+                  className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                    i === center ? "bg-sage" : "bg-black/25"
+                  }`}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              aria-label="Next testimonial"
+              onClick={next}
+              className="flex size-[60px] items-center justify-center rounded-full bg-white/70 text-3xl leading-none text-sage shadow-md ring-1 ring-black/5 transition-colors hover:bg-white"
+            >
+              &#8250;
+            </button>
           </div>
           </div>
         </div>
