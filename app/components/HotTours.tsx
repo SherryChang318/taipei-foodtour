@@ -47,18 +47,22 @@ function TourCard({
 }) {
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="relative aspect-[421/382] w-full overflow-hidden rounded-[12px]">
-        <Image
-          src={tour.image}
-          alt={tour.title}
-          fill
-          sizes="(max-width: 1024px) 100vw, 33vw"
-          className="object-cover"
-        />
-      </div>
-      <h3 className="mt-[27px] line-clamp-2 text-center font-sans text-[18px] font-semibold md:text-[20px]">
-        {tour.title}
-      </h3>
+      <Link href={`/hot-tours/${tour.slug}`}>
+        <div className="relative aspect-[421/382] w-full overflow-hidden rounded-[12px] cursor-pointer">
+          <Image
+            src={tour.image}
+            alt={tour.title}
+            fill
+            sizes="(max-width: 1024px) 100vw, 33vw"
+            className="object-cover"
+          />
+        </div>
+      </Link>
+      <Link href={`/hot-tours/${tour.slug}`}>
+        <h3 className="mt-[27px] line-clamp-2 text-center font-sans text-[18px] font-semibold md:text-[20px] cursor-pointer">
+          {tour.title}
+        </h3>
+      </Link>
       <p className="mt-[14px] line-clamp-3 flex-1 font-sans text-[14px] leading-[22px] md:text-[16px] md:leading-[24px]">
         {tour.body}
       </p>
