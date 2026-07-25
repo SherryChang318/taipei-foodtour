@@ -118,7 +118,7 @@ export default function XimenPage() {
               {/* Food photo — 418×464, 8px radius per Figma */}
               <div className="relative aspect-[418/464] w-full overflow-hidden rounded-[8px] lg:w-[418px]">
                 <Image
-                  src="/images/pancake.JPG"
+                  src="/images/pancake.jpg"
                   alt="Street food at Ximen Night Market"
                   fill
                   sizes="(max-width: 1024px) 100vw, 418px"
