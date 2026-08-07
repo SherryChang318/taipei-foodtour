@@ -15,8 +15,8 @@ const testimonials = [
   },
   {
     quote:
-      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
-    author: "Michael Lam, San Francisco, USA",
+      "Sherry's tour was a uniquely crafted experience that nails all Taiwanese classic must eats from my childhood, as well as the best kept secrets that even Taipei locals don't know.  Her knowledge of Taipei goes beyond food, and into the history of the city that makes it a delicous and educational experience for all.  If you're thinking about the best food tour in Taipei don't hesitate and come hungry!",
+    author: "J.W. Cheng, San Francisco, USA",
   },
 ];
 
