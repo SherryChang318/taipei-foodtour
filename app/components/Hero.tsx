@@ -1,13 +1,81 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+const easeOut = (t: number): number => {
+  return 1 - Math.pow(1 - t, 3);
+};
+
+const useCountUp = (
+  target: number,
+  duration: number,
+  delay: number,
+  triggered: boolean
+): number => {
+  const [count, setCount] = useState(0);
+  const startTimeRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!triggered) {
+      setCount(0);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      startTimeRef.current = null;
+      const animate = (currentTime: number) => {
+        if (startTimeRef.current === null) {
+          startTimeRef.current = currentTime;
+        }
+
+        const elapsed = currentTime - startTimeRef.current;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOut(progress);
+        const currentValue = Math.floor(target * easedProgress);
+
+        setCount(currentValue);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [triggered, target, duration, delay]);
+
+  return count;
+};
+
 const stats = [
-  { value: "250+", label: "Visitors" },
-  { value: "100+", label: "Food Vendors" },
-  { value: "50+", label: "Tours" },
+  { numeric: 250, suffix: "+", label: "Visitors", delay: 0 },
+  { numeric: 100, suffix: "+", label: "Food Vendors", delay: 150 },
+  { numeric: 50, suffix: "+", label: "Tours", delay: 300 },
 ];
 
 export default function Hero() {
+  const ulRef = useRef<HTMLUListElement>(null);
+  const [triggered, setTriggered] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setTriggered(entry.isIntersecting);
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ulRef.current) {
+      observer.observe(ulRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className="relative isolate w-full overflow-hidden text-white">
       <Image
@@ -80,39 +148,44 @@ export default function Hero() {
         </Link>
 
         <ul
+          ref={ulRef}
           className="
             mt-16 flex gap-8 text-left
             sm:mt-20 sm:gap-12
             lg:mt-[90px] lg:gap-[120px]
           "
         >
-          {stats.map((stat) => (
-            <li
-              key={stat.label}
-              className="flex flex-col items-start border-l border-white/70 pl-4 lg:pl-[18px]"
-            >
-              <span
-                className="
-                  font-bold leading-none
-                  text-2xl
-                  sm:text-3xl
-                  lg:text-[32px]
-                "
+          {stats.map((stat) => {
+            const count = useCountUp(stat.numeric, 1800, stat.delay, triggered);
+            return (
+              <li
+                key={stat.label}
+                className="flex flex-col items-start border-l border-white/70 pl-4 lg:pl-[18px]"
               >
-                {stat.value}
-              </span>
-              <span
-                className="
-                  mt-2 font-bold
-                  text-sm
-                  sm:text-lg
-                  lg:text-[24px]
-                "
-              >
-                {stat.label}
-              </span>
-            </li>
-          ))}
+                <span
+                  className="
+                    font-bold leading-none
+                    text-2xl
+                    sm:text-3xl
+                    lg:text-[32px]
+                  "
+                >
+                  {count}
+                  {stat.suffix}
+                </span>
+                <span
+                  className="
+                    mt-2 font-bold
+                    text-sm
+                    sm:text-lg
+                    lg:text-[24px]
+                  "
+                >
+                  {stat.label}
+                </span>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
