@@ -206,7 +206,7 @@ export default function DayTourPage() {
                     Please reach out for detailed pricing and itinerary
                   </p>
                   <div
-                    className="px-8 sm:px-10 py-2 sm:py-3 text-black font-semibold text-sm sm:text-base rounded-full whitespace-nowrap cursor-pointer transition-colors duration-300 hover:bg-[#e6b800]"
+                    className="px-8 sm:px-10 py-2 sm:py-3 text-black font-semibold text-sm sm:text-base rounded-full whitespace-nowrap cursor-pointer transition-opacity duration-300 hover:opacity-60"
                     style={{ backgroundColor: "#ffd700" }}
                   >
                     Book Now
