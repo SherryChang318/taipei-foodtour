@@ -1,4 +1,5 @@
 import localFont from "next/font/local";
+import { ReactNode } from "react";
 
 const gveretLevin = localFont({
   src: "../fonts/GveretLevin-Regular.ttf",
@@ -7,7 +8,7 @@ const gveretLevin = localFont({
   display: "swap",
 });
 
-export default function DayTourLayout({ children }) {
+export default function DayTourLayout({ children }: { children: ReactNode }) {
   return (
     <div className={gveretLevin.variable}>
       {children}
