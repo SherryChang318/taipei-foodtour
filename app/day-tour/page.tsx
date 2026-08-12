@@ -155,7 +155,7 @@ export default function DayTourPage() {
         {/* ── Discover Section ────────────────────────────────── */}
         <section className="w-full bg-[#50574c] text-white">
           <div className="mx-auto w-full max-w-[1440px] px-6 py-16 sm:px-10 lg:px-20 lg:py-24">
-            <h2 className="font-script text-[#dec9ad] text-4xl sm:text-5xl lg:text-6xl leading-tight mb-8 sm:mb-12 lg:mb-16">
+            <h2 className="font-script text-[#dec9ad] text-3xl sm:text-4xl lg:text-5xl leading-tight mb-8 sm:mb-12 lg:mb-16">
               Discover Taiwan by daylight
             </h2>
 
@@ -165,7 +165,7 @@ export default function DayTourPage() {
 
             {/* Early Access Section */}
             <div className="mb-16">
-              <h3 className="text-2xl sm:text-3xl lg:text-3xl font-sans font-normal mb-8 uppercase tracking-wide">
+              <h3 className="text-1xl sm:text-2xl lg:text-2xl font-sans font-normal mb-8 uppercase tracking-wide">
                 Get Early Access
               </h3>
 
@@ -206,7 +206,7 @@ export default function DayTourPage() {
                     Please reach out for detailed pricing and itinerary
                   </p>
                   <div
-                    className="px-8 sm:px-10 py-2 sm:py-3 text-black font-semibold text-lg sm:text-xl rounded-full hover:opacity-90 whitespace-nowrap cursor-pointer transition-colors duration-300"
+                    className="px-8 sm:px-10 py-2 sm:py-3 text-black font-semibold text-sm sm:text-base rounded-full whitespace-nowrap cursor-pointer transition-colors duration-300 hover:bg-[#e6b800]"
                     style={{ backgroundColor: "#ffd700" }}
                   >
                     Book Now
