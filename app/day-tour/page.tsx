@@ -159,13 +159,13 @@ export default function DayTourPage() {
               Discover Taiwan by daylight
             </h2>
 
-            <p className="text-lg sm:text-xl lg:text-3xl font-sans leading-relaxed mb-12 lg:mb-16">
+            <p className="text-lg sm:text-xl lg:text-xl font-sans leading-relaxed mb-12 lg:mb-16">
               Our food and culture day tours are built around one idea: the best experiences happen when a local takes you somewhere they actually love. We're finalising the routes now — sign up to be the first to book.
             </p>
 
             {/* Early Access Section */}
             <div className="mb-16">
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-sans font-normal mb-8 uppercase tracking-wide">
+              <h3 className="text-2xl sm:text-3xl lg:text-3xl font-sans font-normal mb-8 uppercase tracking-wide">
                 Get Early Access
               </h3>
 
@@ -174,13 +174,13 @@ export default function DayTourPage() {
                 <input
                   type="email"
                   placeholder="Your@email.com"
-                  className="w-full px-6 sm:px-8 py-4 sm:py-6 text-xl sm:text-2xl lg:text-3xl font-sans text-black bg-white rounded-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ffd700]"
+                  className="w-full px-6 sm:px-8 py-4 sm:py-6 text-xl sm:text-2xl lg:text-xl font-sans text-black bg-white rounded-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ffd700]"
                   required
                 />
               </div>
 
               {/* Notify Button */}
-              <button className="w-full px-6 sm:px-8 py-4 sm:py-6 text-lg sm:text-xl lg:text-3xl font-sans text-white border-2 border-white rounded-lg hover:bg-white hover:text-black transition-colors duration-300">
+              <button className="w-full px-6 sm:px-8 py-4 sm:py-6 text-lg sm:text-xl lg:text-xl font-sans text-white border-2 border-white rounded-lg hover:bg-white hover:text-black transition-colors duration-300">
                 Notify me when Day Tours launch
               </button>
             </div>
