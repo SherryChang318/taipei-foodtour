@@ -90,7 +90,7 @@ export default function Hero() {
 
       {/* Go to Day Tour — top-left overlay */}
       <div className="absolute left-6 top-7 z-10 sm:left-10 lg:left-[72px] lg:top-9">
-        <a href="#tours" className="flex min-w-0 items-center gap-2 lg:gap-[11px]">
+        <Link href="/day-tour" className="flex min-w-0 items-center gap-2 lg:gap-[11px]">
           <Image
             src="/images/icon-menu.svg"
             alt="Menu"
@@ -101,7 +101,7 @@ export default function Hero() {
           <span className="truncate font-quicksand text-[16px] font-bold leading-none text-white md:text-[20px]">
             Go to Day Tour
           </span>
-        </a>
+        </Link>
         <Image
           src="/images/hero-squiggle.svg"
           alt=""

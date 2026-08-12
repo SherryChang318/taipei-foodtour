@@ -6,7 +6,7 @@ const sitemap = [
   [
     { label: "About Me", href: "/#about" },
     { label: "Food Tour", href: "/#tours" },
-    { label: "Day Tour", href: "#" },
+    { label: "Day Tour", href: "/day-tour" },
   ],
   [
     { label: "FAQs", href: "/faqs" },

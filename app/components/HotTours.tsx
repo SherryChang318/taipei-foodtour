@@ -321,7 +321,7 @@ export default function HotTours({ variant = "default" }: { variant?: Variant } 
             <span className="font-sans text-[16px] font-semibold leading-tight md:leading-[40px] md:text-[20px]">
               We also offer Day Tours and Customized Tours
             </span>
-            <a href={variant === "detail" ? "/" : "#"} className="flex items-center gap-2">
+            <Link href="/day-tour" className="flex items-center gap-2">
               <Image
                 src="/images/icon-menu-red.svg"
                 alt="Menu"
@@ -332,7 +332,7 @@ export default function HotTours({ variant = "default" }: { variant?: Variant } 
               <span className="font-quicksand text-[18px] font-semibold text-[#a52c17] md:text-[20px]">
                 Go to Day Tour
               </span>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
