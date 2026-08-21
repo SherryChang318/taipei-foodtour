@@ -12,7 +12,7 @@ export default function DayTourPage() {
     <main className="flex-1">
         {/* ── Hero Section ────────────────────────────────────── */}
         <section className="relative w-full overflow-hidden bg-[#e8e8e8]">
-          <div className="relative h-[500px] w-full sm:h-[650px] lg:h-[1082px]">
+          <div className="relative h-[500px] w-full sm:h-[650px] lg:h-screen">
             <Image
               src="/images/day-tour-hero.png"
               alt="Taiwan day tour scenic landscape"
@@ -31,7 +31,7 @@ export default function DayTourPage() {
             />
 
             {/* Hamburger Menu - Top Left */}
-            <button className="absolute left-[43px] top-[42px] z-10 w-20 h-14 hover:opacity-70 transition-opacity">
+            <button className="absolute left-[43px] top-[42px] z-10 w-10 h-8 hover:opacity-70 transition-opacity">
               <svg
                 viewBox="0 0 24 24"
                 className="w-full h-full stroke-white"
@@ -45,7 +45,7 @@ export default function DayTourPage() {
             </button>
 
             {/* Main Content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center px-6 sm:px-10">
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-6 sm:px-10 lg:-translate-y-12">
               <h1 className="font-script text-center text-white text-3xl sm:text-4xl lg:text-6xl leading-tight lg:text-[48px]">
                 Day Tour Page is coming soon!
               </h1>
@@ -55,7 +55,7 @@ export default function DayTourPage() {
             </div>
 
             {/* Affiliated Logo - Bottom Right */}
-            <Link href="/" className="absolute bottom-6 right-6 w-28 h-28 sm:w-32 sm:h-32 lg:bottom-16 lg:right-20 lg:w-44 lg:h-44 hover:opacity-80 transition-opacity">
+            <Link href="/" className="absolute bottom-2 right-6 w-28 h-28 sm:w-32 sm:h-32 lg:bottom-8 lg:right-20 lg:w-44 lg:h-44 hover:opacity-80 transition-opacity">
               <Image
                 src="/images/logo.png"
                 alt="Affiliated brand"
@@ -65,7 +65,7 @@ export default function DayTourPage() {
             </Link>
 
             {/* Affiliated Text */}
-            <p className="absolute bottom-32 right-6 sm:bottom-36 sm:right-10 lg:bottom-64 lg:right-56 text-white text-sm sm:text-base lg:text-xl italic font-sans">
+            <p className="absolute bottom-16 right-6 sm:bottom-20 sm:right-10 lg:bottom-48 lg:right-24 text-white text-xs sm:text-sm lg:text-base italic font-sans">
               Affiliated with
             </p>
           </div>
@@ -205,12 +205,13 @@ export default function DayTourPage() {
                      style={{ fontFamily: "var(--font-gveret-levin)", fontStyle: "italic" }}>
                     Please reach out for detailed pricing and itinerary
                   </p>
-                  <div
+                  <Link
+                    href="/#contact"
                     className="px-8 sm:px-10 py-2 sm:py-3 text-black font-semibold text-sm sm:text-base rounded-full whitespace-nowrap cursor-pointer transition-opacity duration-300 hover:opacity-60"
                     style={{ backgroundColor: "#ffd700" }}
                   >
                     Book Now
-                  </div>
+                  </Link>
                 </div>
 
                 {/* 下方 squiggle：距文字下方 mt-4，靠右對齊 */}
