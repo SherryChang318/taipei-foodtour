@@ -154,3 +154,112 @@ padding (`px-6 pt-28` → `sm:px-10` → `md:px-16` → `lg:px-20 lg:min-h-[1030
 heading type (`text-3xl` → `sm:text-5xl` → `md:text-6xl` → `lg:text-[72px]`), and
 the CTA button (`h-12 w-56` → `sm:h-14 w-64` → `md:h-[70px] w-[300px]`) all step
 up with the same mobile-first pattern.
+
+---
+
+## Decision: Backend email sending via Resend + form validation via Zod
+
+**Date:** 2026-08-26
+**Context:** Both booking forms (`BookingForm` on the homepage and the detailed
+booking page at `/booking/`) were client-side only, redirecting to a confirmation
+page on submit without actually processing or validating the data. User enquiries
+and bookings were not being captured or communicated to the business.
+**Decision:** Implement **backend form handling** with two new API routes:
+- `POST /api/contact` — handles the homepage enquiry form (Name, Phone, Email,
+  No. of People, Dates, Message)
+- `POST /api/booking` — handles the tour booking form (Tour, Adults, Children,
+  Date, Time)
+
+Use **Zod** for server-side schema validation and **Resend** for transactional
+email delivery. Both routes send:
+1. A notification email to `sherrychang813@gmail.com` (admin)
+2. A confirmation email to the user
+
+**Reason:** Zod provides type-safe runtime validation with precise error messages;
+it catches bad data before email send, keeping the email pipeline clean. Resend is
+a modern email delivery service with a simple API and good deliverability — better
+than trying to self-host SMTP or integrate with a legacy email system. Sending two
+emails (admin + user confirmation) closes the loop: the business knows a booking
+came in, and the customer has proof we received it.
+**Constraints:** If Resend is down or misconfigured, the form submission will fail
+loudly (the user sees an error). This is intentional — we do not attempt to store
+unconfirmed bookings in a queue or database fallback, keeping the architecture
+simple. If email delivery is critical, a future decision can add a database layer
+(e.g. Supabase or Google Sheets) to persist bookings even if email fails.
+**Result:** Created `/lib/validation.ts` with Zod schemas (`contactFormSchema`,
+`bookingFormSchema`). Both form components now track state, submit to the API
+routes, and show error messages on failure or redirect to `/booking/confirmation`
+on success. Email templates are HTML and include all booking details. The `.env.local`
+file now requires `RESEND_API_KEY=<key>` to function. Guest info (name, email, phone)
+is collected directly on `/booking/page.tsx` before submission to `/api/booking`.
+
+---
+
+## Decision: Replace Dates text input with a dynamic `<select>` dropdown
+
+**Date:** 2026-08-27
+**Context:** The `BookingForm` homepage enquiry form had a plain `<input type="text">` for the Dates field, with a placeholder like "Wednesday, 2 April 2025". Users had to type a date manually, which was error-prone and inconsistent — submitted date strings could vary in format, making it harder to read incoming enquiries.
+**Decision:** Replace the Dates text input with a `<select>` dropdown that dynamically generates every calendar date for the next 3 months (starting from tomorrow), formatted as `"Weekday, D Month YYYY"` (e.g. `"Wednesday, 2 April 2025"`) using `toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })`. The first option is a disabled placeholder ("Select a date"). The select is styled to match the existing "No. of People" select — same `fieldClass`, `appearance-none`, and chevron-down SVG overlay.
+**Reason:** A dropdown eliminates free-text entry errors and guarantees consistent date formatting in the notification emails received by Sherry. No new dependencies are needed — date generation uses vanilla JS `Date` arithmetic. The option value uses the same formatted string as before, so the API route and email templates require no changes.
+**Result:** `BookingForm.tsx` now renders a date `<select>` that is populated at render time with ~90 date options covering the next 3 months. Form submission behavior and API contract are unchanged.
+
+---
+
+## Decision: Add optional Message field to /booking/ page
+
+**Date:** 2026-08-27
+**Context:** The detailed booking page at `/booking/` collected guest name, email, and phone, but had no free-text field for guests to communicate dietary requirements, group composition, or special requests. This information was available on the homepage `BookingForm` (which already had a required Message field) but was missing from the tour-specific booking flow.
+**Decision:** Add an optional **Message** textarea to the Guest Information section of `/app/booking/page.tsx`, below the Phone Number field. Update `bookingFormSchema` in `/lib/validation.ts` to include `message: z.string().optional()`. Update both email templates in `/app/api/booking/route.ts` to conditionally render the message if provided — in the admin notification and the guest confirmation.
+**Reason:** Dietary requirements and children's ages are operationally important for Sherry to prepare the tour; giving guests a free-text field at booking time reduces back-and-forth follow-up. Making it optional avoids adding friction to the core booking flow. The homepage form already set the precedent with the same placeholder text.
+**Result:** The Guest Information section on `/booking/page.tsx` now ends with a Message textarea (optional, 4 rows, same border/focus styling as the other inputs). The Zod schema accepts and validates the field. Both admin and guest emails conditionally include the message block when present.
+
+---
+
+## Decision: Change tour pricing from US$80 to NTD$2,500
+
+**Date:** 2026-08-27
+**Context:** The booking page at `/booking/` displayed pricing in USD ($80 per adult). The business operates in Taiwan and prices tours in New Taiwan Dollars; displaying USD was incorrect and potentially confusing for local and international guests alike.
+**Decision:** Update `/app/booking/page.tsx` to price adults at **NTD$2,500** per person. Change the `total` calculation from `adults * 80` to `adults * 2500`. Update the Booking Summary display from `Adult: {adults} x $80` to `Adult: {adults} x $2,500` and from `Total: US$${total}` to `Total: NTD$${total.toLocaleString()}`.
+**Reason:** NTD is the correct currency for this business. `toLocaleString()` is applied to the total so large numbers render with comma separators (e.g. `5,000`, `10,000`) for readability. No backend schema changes were needed — the `total` field in `bookingFormSchema` is typed as a number and remains currency-agnostic.
+**Result:** The Booking Summary now shows `Adult: 1 x $2,500` and `Total: NTD$2,500`, scaling correctly as participants are added (e.g. 3 adults → `Total: NTD$7,500`). The total value submitted to `/api/booking` reflects the NTD amount.
+
+---
+
+## Decision: Google Sheets client database via googleapis Service Account
+
+**Date:** 2026-08-27
+**Context:** Both form submissions (homepage enquiries via `/api/contact` and tour bookings via `/api/booking`) were sending notification emails to Sherry but had no persistent record. Enquiry and booking data existed only in email inboxes, making it hard to search, filter, or analyze submissions over time. Sherry requested a way to view and manage incoming bookings and enquiries without building a custom admin dashboard.
+**Decision:** Add **Google Sheets integration** using the `googleapis` npm package and service account authentication. Create two new files:
+- `/app/lib/googleSheets.ts` — exports `appendToSheet(sheetName, values)` function that uses a JWT service account to authenticate and append rows to a Google Sheet
+- `/app/lib/initSheets.ts` — CLI script to initialize both sheets with header rows (run once with `npx tsx app/lib/initSheets.ts`)
+
+Update both API routes to conditionally log submissions to Google Sheets *after* the admin email succeeds, in a separate try/catch so Sheets write failure never blocks email delivery or the user's success response.
+**Reason:** Google Sheets is free, widely familiar, and Sherry can access and manage data directly without needing custom UI. The service account approach requires no user login — only environment variables (`GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY`, `GOOGLE_SHEETS_ID`). Logging to Sheets is a fire-and-forget operation that fails silently (logged to console) if the service account credentials are missing or the sheet is unreachable, preserving the reliability of the core booking/email flow.
+**Constraints:** Sheets write failure must never block email send or user success response. Both sheets auto-insert rows in reverse chronological order (newest first) using the `INSERT_ROWS` insert data option. Timestamps use `Asia/Taipei` timezone via `toLocaleString()` for local context.
+**Result:** Created `/app/lib/googleSheets.ts` (connection & append logic) and `/app/lib/initSheets.ts` (header initialization). Updated `/app/api/contact/route.ts` to log enquiries (Name, Phone, Email, No. of People, Dates, Message, timestamp). Updated `/app/api/booking/route.ts` to log bookings (Tour, Date, Time, Adults, Children, Total NTD, Guest Name, Email, Phone, timestamp). Both routes wrap Sheets operations in try/catch; on error, an error message is logged to console but form submission completes successfully.
+
+---
+
+## Decision: Google Sheets client database via googleapis Service Account
+
+**Date:** 2026-08-27
+**Context:** Sherry needs a way to view all booking and enquiry submissions
+without any admin UI. The data is already being sent via email (Resend), but
+a structured database makes it easy to filter, sort, and export records.
+**Decision:** Use **Google Sheets** as the client database, written to via the
+**googleapis** npm package with a **Service Account** for authentication.
+Two sheets (tabs) store data separately: "Bookings" and "Enquiries".
+**Reason:** Google Sheets is free, requires no extra infrastructure, and Sherry
+can view and filter data directly without any technical knowledge. Service
+Account authentication is stable (no token expiry unlike OAuth) and works
+reliably in a Vercel serverless environment.
+**Files created:**
+- `app/lib/googleSheets.ts` — `appendToSheet()` helper used by both API routes
+- `app/lib/initSheets.ts` — one-time script to write header rows (run with `npx tsx`)
+**Constraints:**
+- Sheets write failure must never block email delivery or the user success response
+- All `appendToSheet()` calls are wrapped in separate try/catch blocks
+- Timestamps use Asia/Taipei timezone
+**Result:** Every Contact form submission appends a row to "Enquiries"; every
+Booking form submission appends a row to "Bookings". Both sheets have header
+rows initialized via `initSheets.ts`.

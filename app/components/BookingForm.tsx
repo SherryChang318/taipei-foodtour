@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import ObfuscatedEmail from "./ObfuscatedEmail";
 
 const fieldClass =
@@ -11,6 +12,45 @@ const labelClass = "text-lg text-white";
 
 export default function BookingForm() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    numberOfPeople: "5",
+    dates: "",
+    message: "",
+  });
+
+  useEffect(() => {
+    const formatDate = (date: Date) => {
+      return date.toLocaleDateString('en-GB', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    };
+
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const endDate = new Date(tomorrow);
+    endDate.setMonth(endDate.getMonth() + 3);
+
+    const dates: string[] = [];
+    let currentDate = new Date(tomorrow);
+
+    while (currentDate <= endDate) {
+      dates.push(formatDate(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    setAvailableDates(dates);
+  }, []);
 
   return (
     <section id="contact" className="w-full bg-black text-white">
@@ -70,9 +110,31 @@ export default function BookingForm() {
 
           {/* Right: form */}
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              router.push("/booking/confirmation");
+              setIsLoading(true);
+              setSubmitError(null);
+
+              try {
+                const response = await fetch("/api/contact", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(formData),
+                });
+
+                if (!response.ok) {
+                  const error = await response.json();
+                  throw new Error(error.message || "Failed to submit enquiry");
+                }
+
+                router.push("/booking/confirmation");
+              } catch (error) {
+                setSubmitError(
+                  error instanceof Error ? error.message : "An error occurred. Please try again."
+                );
+              } finally {
+                setIsLoading(false);
+              }
             }}
             className="flex flex-col gap-6"
           >
@@ -80,11 +142,25 @@ export default function BookingForm() {
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-[383fr_291fr]">
               <label className="flex flex-col gap-2">
                 <span className={labelClass}>Name</span>
-                <input type="text" placeholder="Jane Smith" className={fieldClass} />
+                <input
+                  type="text"
+                  placeholder="Jane Smith"
+                  className={fieldClass}
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
+                />
               </label>
               <label className="flex flex-col gap-2">
                 <span className={labelClass}>Phone</span>
-                <input type="tel" placeholder="+886 912345678" className={fieldClass} />
+                <input
+                  type="tel"
+                  placeholder="+886 912345678"
+                  className={fieldClass}
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  required
+                />
               </label>
             </div>
 
@@ -92,15 +168,24 @@ export default function BookingForm() {
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-[492fr_184fr]">
               <label className="flex flex-col gap-2">
                 <span className={labelClass}>Email</span>
-                <input type="email" placeholder="example@company.com" className={fieldClass} />
+                <input
+                  type="email"
+                  placeholder="example@company.com"
+                  className={fieldClass}
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
               </label>
               <label className="flex flex-col gap-2">
                 <span className={labelClass}>No. of People</span>
                 <div className="relative">
                   <select
-                    defaultValue={5}
                     aria-label="No. of People"
                     className={`${fieldClass} appearance-none pr-10`}
+                    value={formData.numberOfPeople}
+                    onChange={(e) => setFormData({ ...formData, numberOfPeople: e.target.value })}
+                    required
                   >
                     {Array.from({ length: 19 }, (_, i) => i + 2).map((n) => (
                       <option key={n} value={n} className="text-black">
@@ -124,7 +209,34 @@ export default function BookingForm() {
 
             <label className="flex flex-col gap-2">
               <span className={labelClass}>Dates</span>
-              <input type="text" placeholder="Wednesday, 2 April 2025" className={fieldClass} />
+              <div className="relative">
+                <select
+                  aria-label="Dates"
+                  className={`${fieldClass} appearance-none pr-10`}
+                  value={formData.dates}
+                  onChange={(e) => setFormData({ ...formData, dates: e.target.value })}
+                  required
+                >
+                  <option value="" disabled>
+                    Select a date
+                  </option>
+                  {availableDates.map((date) => (
+                    <option key={date} value={date} className="text-black">
+                      {date}
+                    </option>
+                  ))}
+                </select>
+                <svg
+                  aria-hidden
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-black"
+                  width="18"
+                  height="11"
+                  viewBox="0 0 18 11"
+                  fill="none"
+                >
+                  <path d="M1 1l8 8 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
             </label>
 
             <label className="flex flex-col gap-2">
@@ -133,14 +245,22 @@ export default function BookingForm() {
                 rows={5}
                 placeholder="*Please include dietary requirements and numbers of children if any"
                 className="h-[156px] w-full resize-none rounded-[10px] bg-white px-4 py-3 text-base text-black placeholder:text-[#ababab] outline-none focus:ring-2 focus:ring-gold"
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                required
               />
             </label>
 
+            {submitError && (
+              <p className="text-sm text-red-400 bg-red-950/30 rounded px-3 py-2">{submitError}</p>
+            )}
+
             <button
               type="submit"
-              className="mx-auto mt-2 h-[56px] w-[204px] rounded-[30px] bg-gold font-ui text-base font-semibold text-black transition-colors hover:bg-[#ffcd00]"
+              disabled={isLoading}
+              className="mx-auto mt-2 h-[56px] w-[204px] rounded-[30px] bg-gold font-ui text-base font-semibold text-black transition-colors hover:bg-[#ffcd00] disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Submit
+              {isLoading ? "Submitting..." : "Submit"}
             </button>
           </form>
         </div>

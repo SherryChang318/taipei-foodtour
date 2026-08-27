@@ -158,6 +158,12 @@ export default function BookingPage() {
   const [time, setTime] = useState<string | null>(null);
   const [tab, setTab] = useState<"intro" | "note">("intro");
   const [attempted, setAttempted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
+  const [guestPhone, setGuestPhone] = useState("");
+  const [message, setMessage] = useState("");
 
   const selectedTour = TOURS.find((t) => t.value === tourValue)!;
 
@@ -202,30 +208,61 @@ export default function BookingPage() {
   }, []);
 
   /* ---- Derived summary ---- */
-  const total = adults * 80;
+  const total = adults * 2500;
   const formattedDate = selectedDate
     ? selectedDate.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "long", year: "numeric" })
     : null;
-  const canSubmit = Boolean(selectedDate) && Boolean(time);
+  const canSubmit = Boolean(selectedDate) && Boolean(time) && Boolean(guestName.trim()) && Boolean(guestEmail.trim());
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!canSubmit) {
       setAttempted(true);
       return;
     }
-    // Preserve the existing mechanism: client-side router.push to the
-    // confirmation page. Booking details ride along as query params (the
-    // confirmation page ignores them, so it keeps working unchanged).
-    const params = new URLSearchParams({
-      tour: tourValue,
-      date: formattedDate ?? "",
-      time: time ?? "",
-      adults: String(adults),
-      children: String(childrenFree),
-      total: String(total),
-    });
-    router.push(`/booking/confirmation?${params.toString()}`);
+
+    setIsLoading(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tour: tourValue,
+          adults,
+          childrenFree,
+          date: formattedDate ?? "",
+          time: time ?? "",
+          total,
+          guestName,
+          guestEmail,
+          guestPhone,
+          message,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to process booking");
+      }
+
+      const params = new URLSearchParams({
+        tour: tourValue,
+        date: formattedDate ?? "",
+        time: time ?? "",
+        adults: String(adults),
+        children: String(childrenFree),
+        total: String(total),
+      });
+      router.push(`/booking/confirmation?${params.toString()}`);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error ? error.message : "An error occurred. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -427,10 +464,61 @@ export default function BookingPage() {
                 <div className="mt-6 flex items-end justify-between gap-4">
                   <div className="space-y-2">
                     <p className="font-work text-[18px] text-black">Child: {childrenFree}</p>
-                    <p className="font-work text-[18px] text-black">Adult: {adults} x $80</p>
+                    <p className="font-work text-[18px] text-black">Adult: {adults} x $2,500</p>
                   </div>
-                  <p className="font-work text-[18px] font-bold text-black">Total: US${total}</p>
+                  <p className="font-work text-[18px] font-bold text-black">Total: NTD${total.toLocaleString()}</p>
                 </div>
+              </div>
+            </div>
+
+            {/* Guest Info */}
+            <div>
+              <SectionLabel>Guest Information</SectionLabel>
+              <div className="mt-6 flex max-w-[552px] flex-col gap-5">
+                <label className="flex flex-col gap-2">
+                  <span className="font-work text-[16px] font-medium text-black">Full Name</span>
+                  <input
+                    type="text"
+                    placeholder="Jane Smith"
+                    className="h-[49px] w-full rounded-[10px] border border-black bg-white px-4 text-[16px] text-black placeholder:text-[#ababab] outline-none focus:ring-2 focus:ring-gold"
+                    value={guestName}
+                    onChange={(e) => setGuestName(e.target.value)}
+                    required
+                  />
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="font-work text-[16px] font-medium text-black">Email Address</span>
+                  <input
+                    type="email"
+                    placeholder="jane@example.com"
+                    className="h-[49px] w-full rounded-[10px] border border-black bg-white px-4 text-[16px] text-black placeholder:text-[#ababab] outline-none focus:ring-2 focus:ring-gold"
+                    value={guestEmail}
+                    onChange={(e) => setGuestEmail(e.target.value)}
+                    required
+                  />
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="font-work text-[16px] font-medium text-black">Phone Number (Optional)</span>
+                  <input
+                    type="tel"
+                    placeholder="+886 912345678"
+                    className="h-[49px] w-full rounded-[10px] border border-black bg-white px-4 text-[16px] text-black placeholder:text-[#ababab] outline-none focus:ring-2 focus:ring-gold"
+                    value={guestPhone}
+                    onChange={(e) => setGuestPhone(e.target.value)}
+                  />
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="font-work text-[16px] font-medium text-black">
+                    Message <span className="font-normal text-[#ababab]">(Optional)</span>
+                  </span>
+                  <textarea
+                    rows={4}
+                    placeholder="*Please include dietary requirements and numbers of children if any"
+                    className="w-full resize-none rounded-[10px] border border-black bg-white px-4 py-3 text-[16px] text-black placeholder:text-[#ababab] outline-none focus:ring-2 focus:ring-gold"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+                </label>
               </div>
             </div>
 
@@ -439,12 +527,15 @@ export default function BookingPage() {
               <button
                 type="submit"
                 className="h-[56px] w-full max-w-[551px] rounded-[20px] bg-gold font-ui text-[16px] font-semibold text-black transition-colors hover:bg-[#ffcd00] disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={!canSubmit}
+                disabled={!canSubmit || isLoading}
               >
-                Submit
+                {isLoading ? "Processing..." : "Submit"}
               </button>
-              {attempted && !canSubmit && (
-                <p className="mt-3 text-[14px] text-[#a52c17]">Please choose a date and a time to continue.</p>
+              {submitError && (
+                <p className="mt-3 text-[14px] text-red-400 bg-red-950/30 rounded px-3 py-2">{submitError}</p>
+              )}
+              {attempted && !canSubmit && !submitError && (
+                <p className="mt-3 text-[14px] text-[#a52c17]">Please fill in all required fields to continue.</p>
               )}
             </div>
           </form>
