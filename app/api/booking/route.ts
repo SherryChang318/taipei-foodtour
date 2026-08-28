@@ -27,7 +27,7 @@ export async function POST(request: Request) {
           <li>Children (Under 5): ${validatedData.childrenFree}</li>
           <li>Total: ${totalParticipants}</li>
         </ul>
-        <p><strong>Total Price:</strong> US$${validatedData.total}</p>
+        <p><strong>Total Price:</strong> NTD$${validatedData.total.toLocaleString()}</p>
         ${validatedData.message ? `<p><strong>Message:</strong> ${validatedData.message}</p>` : ""}
       </div>
     `;
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         <p><strong>Date:</strong> ${validatedData.date}</p>
         <p><strong>Time:</strong> ${validatedData.time}</p>
         <p><strong>Participants:</strong> ${totalParticipants}</p>
-        <p><strong>Total:</strong> US$${validatedData.total}</p>
+        <p><strong>Total:</strong> NTD$${validatedData.total.toLocaleString()}</p>
         ${validatedData.message ? `<p><strong>Your message:</strong> ${validatedData.message}</p>` : ""}
         <p>Our guide will reach out within 24 hours with meeting point details and any additional information you need.</p>
         <p>If you have any questions, don't hesitate to contact us at sherrychang813@gmail.com or +886 975 724 127 on WhatsApp.</p>
