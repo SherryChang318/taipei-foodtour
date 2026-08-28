@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
     // Send email to admin
     await resend.emails.send({
-      from: "Sherry Food Tour <onboarding@resend.dev>",
+      from: "Sherry Food Tour <noreply@sherrychang318.com>",
       to: process.env.RECIPIENT_EMAIL!,
       subject: `New Tour Enquiry from ${validatedData.name}`,
       html: emailHtml,
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     // Send confirmation email to user
     try {
       await resend.emails.send({
-        from: "Sherry Food Tour <onboarding@resend.dev>",
+        from: "Sherry Food Tour <noreply@sherrychang318.com>",
         to: validatedData.email,
         subject: "We received your Sherry's Food Tour enquiry",
         html: confirmationHtml,
