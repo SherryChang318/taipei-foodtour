@@ -12,7 +12,7 @@ export default function ConfirmationPage() {
       <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden">
         {/* Background image */}
         <Image
-          src="/images/Booking_form_page.JPG"
+          src="/images/Booking_form_page.jpg"
           alt=""
           fill
           priority
