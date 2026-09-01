@@ -30,20 +30,6 @@ export default function DayTourPage() {
               }}
             />
 
-            {/* Hamburger Menu - Top Left */}
-            <button className="absolute left-[43px] top-[42px] z-10 w-10 h-8 hover:opacity-70 transition-opacity">
-              <svg
-                viewBox="0 0 24 24"
-                className="w-full h-full stroke-white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              >
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            </button>
-
             {/* Main Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center px-6 sm:px-10 lg:-translate-y-12">
               <h1 className="font-script text-center text-white text-3xl sm:text-4xl lg:text-6xl leading-tight lg:text-[48px]">
@@ -54,20 +40,20 @@ export default function DayTourPage() {
               </p>
             </div>
 
-            {/* Affiliated Logo - Bottom Right */}
-            <Link href="/" className="absolute bottom-2 right-6 w-28 h-28 sm:w-32 sm:h-32 lg:bottom-8 lg:right-20 lg:w-44 lg:h-44 hover:opacity-80 transition-opacity">
-              <Image
-                src="/images/logo.png"
-                alt="Affiliated brand"
-                fill
-                className="object-contain"
-              />
-            </Link>
-
-            {/* Affiliated Text */}
-            <p className="absolute bottom-16 right-6 sm:bottom-20 sm:right-10 lg:bottom-48 lg:right-24 text-white text-xs sm:text-sm lg:text-base italic font-sans">
-              Affiliated with
-            </p>
+            {/* Affiliated Logo and Text */}
+            <div className="absolute bottom-4 right-6 sm:bottom-6 sm:right-10 lg:bottom-10 lg:right-20 flex flex-col items-center gap-2">
+              <p className="text-white text-xs sm:text-sm lg:text-base italic font-sans">
+                Affiliated with
+              </p>
+              <Link href="/" className="relative w-28 h-28 sm:w-32 sm:h-32 lg:w-44 lg:h-44 hover:opacity-80 transition-opacity">
+                <Image
+                  src="/images/logo.png"
+                  alt="Affiliated brand"
+                  fill
+                  className="object-contain"
+                />
+              </Link>
+            </div>
           </div>
         </section>
 
