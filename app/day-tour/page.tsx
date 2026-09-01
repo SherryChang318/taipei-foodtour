@@ -41,7 +41,7 @@ export default function DayTourPage() {
             </div>
 
             {/* Affiliated Logo and Text */}
-            <div className="absolute bottom-4 right-6 sm:bottom-6 sm:right-10 lg:bottom-10 lg:right-20 flex flex-col items-center gap-2">
+            <div className="absolute bottom-4 right-6 sm:bottom-6 sm:right-10 lg:bottom-10 lg:right-20 flex flex-col items-center gap-0">
               <Link href="/" className="relative w-28 h-28 sm:w-32 sm:h-32 lg:w-44 lg:h-44 hover:opacity-80 transition-opacity">
                 <Image
                   src="/images/logo.png"
@@ -50,7 +50,7 @@ export default function DayTourPage() {
                   className="object-contain"
                 />
               </Link>
-              <p className="text-white text-xs sm:text-sm lg:text-base italic font-sans">
+              <p className="-mt-6 text-white text-xs sm:text-sm lg:text-base italic font-sans">
                 Affiliated with
               </p>
             </div>
@@ -185,8 +185,8 @@ export default function DayTourPage() {
                   />
                 </div>
 
-                {/* 文字 + Button 同一行 */}
-                <div className="flex items-center gap-6 lg:gap-8">
+                {/* 文字 + Button: stacked on mobile, side-by-side on desktop */}
+                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8">
                   <p className="text-lg sm:text-xl lg:text-2xl text-white"
                      style={{ fontFamily: "var(--font-gveret-levin)", fontStyle: "italic" }}>
                     Please reach out for detailed pricing and itinerary
