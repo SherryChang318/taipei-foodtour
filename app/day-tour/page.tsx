@@ -216,51 +216,61 @@ export default function DayTourPage() {
         </section>
 
         {/* ── Footer Section ────────────────────────────────────── */}
-        <footer className="w-full bg-[#50574c]">
-          <div className="mx-auto w-full max-w-[1440px] px-6 py-16 sm:px-10 lg:px-20">
-            {/* Divider Line */}
-            <div className="mb-12 h-px bg-white/50" />
+        <footer className="w-full bg-[#50574c] text-white">
+          <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-10 lg:px-[70px]">
+            <hr className="border-white/30" />
 
-            {/* Footer Content */}
-            <div className="grid grid-cols-3 gap-12 items-center">
-              {/* Left: Food Tour & About Sherry */}
-              <div className="text-white flex flex-row gap-x-6 items-center">
-                <Link href="/#tours" className="text-xl font-sans font-normal hover:opacity-70 transition-opacity">
-                  Food Tour
-                </Link>
-                <Link href="/#about" className="text-xl font-sans font-normal hover:opacity-70 transition-opacity">
-                  About Sherry
-                </Link>
+            <div className="grid grid-cols-1 gap-10 py-12 md:grid-cols-[auto_1fr_auto] md:items-start md:gap-16 lg:py-16">
+              {/* Logo */}
+              <div className="flex items-start">
+                <Image
+                  src="/images/logo.png"
+                  alt="Sherry's Food Tour"
+                  width={182}
+                  height={182}
+                  className="h-28 w-28 object-contain lg:h-[182px] lg:w-[182px]"
+                />
               </div>
 
-              {/* Center: Logo & Affiliated */}
-              <div className="text-center flex flex-col items-center gap-0">
-                <Link href="/">
-                  <div className="w-32 h-32">
-                    <Image
-                      src="/images/logo.png"
-                      alt="Sherry's Food Tour"
-                      width={132}
-                      height={132}
-                      className="object-contain"
-                    />
-                  </div>
-                </Link>
-                <p className="text-white text-sm italic font-sans">Affiliated with</p>
-              </div>
+              {/* Sitemap */}
+              <nav aria-label="Footer">
+                <div className="grid grid-cols-2 gap-x-16 gap-y-3 text-lg">
+                  <ul className="space-y-3">
+                    <li><Link href="/#about" className="transition-opacity hover:opacity-70">About Me</Link></li>
+                    <li><Link href="/#tours" className="transition-opacity hover:opacity-70">Food Tour</Link></li>
+                    <li><Link href="/day-tour" className="transition-opacity hover:opacity-70">Day Tour</Link></li>
+                  </ul>
+                  <ul className="space-y-3">
+                    <li><Link href="/faqs" className="transition-opacity hover:opacity-70">FAQs</Link></li>
+                    <li><Link href="/#testimonials" className="transition-opacity hover:opacity-70">Testimonials</Link></li>
+                    <li><Link href="/#contact" className="transition-opacity hover:opacity-70">Contact Me</Link></li>
+                  </ul>
+                </div>
+              </nav>
 
-              {/* Right: Social Icons */}
-              <div className="flex justify-end gap-6 items-center">
-                <a href="https://www.instagram.com/sherrychang318/" target="_blank" rel="noopener noreferrer" className="text-white hover:opacity-70 transition-opacity">
-                  <Image src="/images/icon-instagram.svg" alt="Instagram" width={24} height={24} />
-                </a>
-                <a href="mailto:sherrychang318@gmail.com" className="text-white hover:opacity-70 transition-opacity">
-                  <Image src="/images/icon-email.svg" alt="Email" width={28} height={22} />
-                </a>
-                <a href="https://wa.me/886975724127" target="_blank" rel="noopener noreferrer" className="text-white hover:opacity-70 transition-opacity">
-                  <Image src="/images/icon-whatsapp.svg" alt="WhatsApp" width={28} height={28} />
-                </a>
-              </div>
+              {/* Socials */}
+              <ul className="flex items-start gap-5 md:justify-self-end">
+                <li>
+                  <a href="https://www.instagram.com/sherrychang318/" aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70">
+                    <Image src="/images/icon-instagram.svg" alt="" width={31} height={29} className="object-contain" />
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:sherrychang318@gmail.com" aria-label="Email" className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70">
+                    <Image src="/images/icon-email.svg" alt="" width={28} height={22} className="object-contain" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://wa.me/886975724127" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center transition-opacity hover:opacity-70">
+                    <Image src="/images/icon-whatsapp.svg" alt="" width={28} height={28} className="object-contain" />
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex items-center gap-2 pb-10 text-sm text-white/90">
+              <span aria-hidden>©</span>
+              <p>2026 Asian Foodie - Sherry&rsquo;s Personal Tour</p>
             </div>
           </div>
         </footer>

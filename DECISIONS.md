@@ -263,3 +263,23 @@ reliably in a Vercel serverless environment.
 **Result:** Every Contact form submission appends a row to "Enquiries"; every
 Booking form submission appends a row to "Bookings". Both sheets have header
 rows initialized via `initSheets.ts`.
+
+---
+
+## Decision: Verify custom domain in Resend to enable unrestricted email delivery
+
+**Date:** 2026-08-27
+**Context:** After switching to Sherry's own Resend account, all email sends were returning 403 errors with "Testing domain restriction" — Resend's `onboarding@resend.dev` sender can only deliver to the account owner's own email address, not to arbitrary guest addresses. This blocked both admin notifications and guest confirmation emails.
+**Decision:** Verify **`sherrychang318.com`** as a sending domain in Resend by adding DNS records (DKIM TXT, SPF MX + TXT, DMARC TXT) to Namecheap's Advanced DNS. Update the `from` address in both `/app/api/contact/route.ts` and `/app/api/booking/route.ts` from `onboarding@resend.dev` to `noreply@sherrychang318.com`.
+**Reason:** A verified custom domain lifts Resend's testing restriction and allows emails to be sent to any recipient. Using `noreply@sherrychang318.com` as the sender also looks more professional than the generic Resend test address. DNS propagation on Namecheap completed within minutes.
+**Result:** Both API routes now send from `noreply@sherrychang318.com`. Admin notifications arrive at `sherrychang318@gmail.com` and guest confirmation emails deliver successfully to any address submitted via the booking forms.
+
+---
+
+## Decision: Fix confirmation page background image — filename case sensitivity
+
+**Date:** 2026-08-28
+**Context:** The confirmation page background image was missing on Vercel (production) but displayed correctly in local development. The image `src` in `/app/booking/confirmation/page.tsx` referenced `Booking_form_page.JPG` (uppercase extension) while the actual file in `public/images/` was `Booking_form_page.jpg` (lowercase).
+**Decision:** Correct the `src` attribute in `ConfirmationPage` from `Booking_form_page.JPG` to `Booking_form_page.jpg`.
+**Reason:** macOS is case-insensitive so the mismatch was invisible locally. Vercel runs on Linux which is case-sensitive — the uppercase `.JPG` extension caused a 404 on the image asset in production. No file rename was needed; only the reference in code required fixing.
+**Result:** The confirmation page background image now renders correctly in production.
