@@ -42,9 +42,6 @@ export default function DayTourPage() {
 
             {/* Affiliated Logo and Text */}
             <div className="absolute bottom-4 right-6 sm:bottom-6 sm:right-10 lg:bottom-10 lg:right-20 flex flex-col items-center gap-2">
-              <p className="text-white text-xs sm:text-sm lg:text-base italic font-sans">
-                Affiliated with
-              </p>
               <Link href="/" className="relative w-28 h-28 sm:w-32 sm:h-32 lg:w-44 lg:h-44 hover:opacity-80 transition-opacity">
                 <Image
                   src="/images/logo.png"
@@ -53,6 +50,9 @@ export default function DayTourPage() {
                   className="object-contain"
                 />
               </Link>
+              <p className="text-white text-xs sm:text-sm lg:text-base italic font-sans">
+                Affiliated with
+              </p>
             </div>
           </div>
         </section>
