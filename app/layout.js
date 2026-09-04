@@ -35,6 +35,28 @@ export const metadata = {
   title: "Sherry's Food Tour — Taste the Heart of Taipei",
   description:
     "Authentic Taipei food tours, hand-crafted and led by Sherry Chang. Eat like a local, not a tourist.",
+  openGraph: {
+    title: "Sherry's Food Tour — Taste the Heart of Taipei",
+    description: 'Authentic Taipei food tours led by a born-and-raised local. Hidden gems, real flavours, unforgettable experiences.',
+    url: 'https://www.sherrychang318.com',
+    siteName: "Sherry's Food Tour",
+    images: [
+      {
+        url: 'https://www.sherrychang318.com/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: "Sherry's Food Tour — Taste the Heart of Taipei",
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Sherry's Food Tour — Taste the Heart of Taipei",
+    description: 'Authentic Taipei food tours led by a born-and-raised local.',
+    images: ['https://www.sherrychang318.com/opengraph-image'],
+  },
 };
 
 export default function RootLayout({ children }) {
