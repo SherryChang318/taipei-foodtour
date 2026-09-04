@@ -77,7 +77,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative isolate w-full overflow-hidden text-white">
+    <section className="relative isolate h-screen w-full overflow-hidden text-white">
       <Image
         src="/images/hero.png"
         alt="Crowded Taipei food market at night"
@@ -113,11 +113,11 @@ export default function Hero() {
 
       <div
         className="
-          mx-auto flex w-full max-w-[1440px] flex-col items-center
+          mx-auto flex h-full w-full max-w-[1440px] flex-col items-center
           px-6 pb-16 pt-28
           sm:px-10 sm:pt-32
           md:px-16
-          lg:min-h-[1030px] lg:px-20 lg:pb-[110px] lg:pt-[188px]
+          lg:px-20 lg:pb-[110px] lg:pt-[188px]
         "
       >
         <h1
@@ -141,7 +141,7 @@ export default function Hero() {
             mt-24 h-12 w-[180px] text-[14px]
             sm:mt-32
             md:text-[16px]
-            lg:mt-[400px] lg:h-[50px] lg:w-[200px]
+            lg:mt-auto lg:h-[50px] lg:w-[200px]
           "
         >
           My Food Tours
@@ -152,7 +152,7 @@ export default function Hero() {
           className="
             mt-16 flex gap-8 text-left
             sm:mt-20 sm:gap-12
-            lg:mt-[90px] lg:gap-[120px]
+            lg:mt-10 lg:gap-[120px]
           "
         >
           {stats.map((stat) => {
