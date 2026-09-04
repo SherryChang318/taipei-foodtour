@@ -1,5 +1,6 @@
 import { Open_Sans, Instrument_Sans, Work_Sans, Quicksand } from "next/font/google";
 import localFont from "next/font/local";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -42,7 +43,9 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${openSans.variable} ${instrumentSans.variable} ${workSans.variable} ${quicksand.variable} ${gveretLevin.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">{children}
+        <GoogleAnalytics gaId="G-CN6XTV6X0D" />
+      </body>
     </html>
   );
 }
