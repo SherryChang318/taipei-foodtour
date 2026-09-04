@@ -102,7 +102,7 @@ export default function Footer() {
 
         <div className="flex items-center gap-2 pb-10 text-sm text-white/90">
           <span aria-hidden>©</span>
-          <p>2026 Asian Foodie - Sherry&rsquo;s Personal Tour</p>
+          <p>2026 Taiwan Foodie - Sherry&rsquo;s Personal Tour</p>
         </div>
       </div>
     </footer>
