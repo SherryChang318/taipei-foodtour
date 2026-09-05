@@ -1,6 +1,5 @@
 import { Open_Sans, Instrument_Sans, Work_Sans, Quicksand } from "next/font/google";
 import localFont from "next/font/local";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -32,9 +31,12 @@ const gveretLevin = localFont({
 });
 
 export const metadata = {
-  title: "Sherry's Food Tour — Taste the Heart of Taipei",
-  description:
-    "Authentic Taipei food tours, hand-crafted and led by Sherry Chang. Eat like a local, not a tourist.",
+  title: {
+  default: "Sherry's Food Tour — Taste the Heart of Taipei",
+  template: "%s | Sherry's Food Tour",
+  },
+  description: "Authentic Taipei food tours, hand-curated and led by Sherry Chang. Eat like a local, not a tourist.",
+  keywords: ['Taipei food tour', 'Taiwan food tour', 'Taipei street food', 'Ningxia night market tour', 'Dadaocheng food'],
   openGraph: {
     title: "Sherry's Food Tour — Taste the Heart of Taipei",
     description: 'Authentic Taipei food tours led by a born-and-raised local. Hidden gems, real flavours, unforgettable experiences.',
@@ -88,7 +90,6 @@ export default function RootLayout({ children }) {
     />
   </noscript>
         {children}
-        <GoogleAnalytics gaId="G-CN6XTV6X0D" />
       </body>
     </html>
   );
