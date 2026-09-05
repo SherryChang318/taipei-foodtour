@@ -127,6 +127,11 @@ export default function BookingForm() {
                   throw new Error(error.message || "Failed to submit enquiry");
                 }
 
+                window.dataLayer?.push({
+                  event: "contact_form_submit",
+                  number_of_people: formData.numberOfPeople,
+                  selected_date: formData.dates,
+                });
                 router.push("/booking/confirmation");
               } catch (error) {
                 setSubmitError(

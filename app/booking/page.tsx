@@ -247,6 +247,15 @@ export default function BookingPage() {
         throw new Error(error.message || "Failed to process booking");
       }
 
+      window.dataLayer?.push({
+        event: "booking_form_submit",
+        tour_name: tourValue,
+        adults: adults,
+        children_free: childrenFree,
+        selected_date: formattedDate ?? "",
+        selected_time: time ?? "",
+        total_value: total,
+      });
       const params = new URLSearchParams({
         tour: tourValue,
         date: formattedDate ?? "",

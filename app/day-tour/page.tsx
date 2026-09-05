@@ -196,7 +196,7 @@ export default function DayTourPage() {
                     className="px-8 sm:px-10 py-2 sm:py-3 text-black font-semibold text-sm sm:text-base rounded-full whitespace-nowrap cursor-pointer transition-opacity duration-300 hover:opacity-60"
                     style={{ backgroundColor: "#ffd700" }}
                   >
-                    Book Now
+                    Contact Me
                   </Link>
                 </div>
 
