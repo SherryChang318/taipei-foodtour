@@ -59,6 +59,9 @@ export const metadata = {
     description: 'Authentic Taipei food tours led by a born-and-raised local.',
     images: ['https://www.sherrychang318.com/opengraph-image'],
   },
+  verification: {
+    google: "bIU_3mUD1G1EGjcRC63DMw95FXFOv6xbHUjLTXphA4w",
+  },
 };
 
 export default function RootLayout({ children }) {
