@@ -283,3 +283,42 @@ rows initialized via `initSheets.ts`.
 **Decision:** Correct the `src` attribute in `ConfirmationPage` from `Booking_form_page.JPG` to `Booking_form_page.jpg`.
 **Reason:** macOS is case-insensitive so the mismatch was invisible locally. Vercel runs on Linux which is case-sensitive — the uppercase `.JPG` extension caused a 404 on the image asset in production. No file rename was needed; only the reference in code required fixing.
 **Result:** The confirmation page background image now renders correctly in production.
+
+---
+
+## Decision: Install Google Tag Manager + GA4 event tracking
+
+**Date:** 2026-09-08
+**Context:** The site had no analytics. We needed to track visitor behaviour and key conversion actions (booking form submissions, contact form submissions, "Book Now" button clicks) without hardcoding tracking scripts into individual components.
+**Decision:** Install **Google Tag Manager** (container `GTM-PN4625P9`) via a `dangerouslySetInnerHTML` `<script>` tag placed directly in the `<head>` of `app/layout.tsx`, with the required `<noscript>` iframe at the top of `<body>`. Connect GTM to **GA4** property (`G-CN6XTV6X0D`) via a GA4 Configuration tag. Create three GA4 Event tags triggered by custom GTM triggers:
+- `book_now_click` — fires on click of the "Book Now" CTA button
+- `booking_form_submit` — fires on booking form submission
+- `contact_form_submit` — fires on contact form submission
+
+**Reason:** GTM decouples tracking logic from application code — future tags and events can be added or modified in the GTM dashboard without code deployments. GA4 is Google's current analytics platform and integrates natively with Search Console and Google Ads. Using `dangerouslySetInnerHTML` (rather than `next/script`) ensures the GTM snippet appears in the raw `<head>` HTML, which is required for GTM-based Search Console verification.
+**Result:** Verified via GTM Tag Assistant and GA4 DebugView — all three custom events fire correctly on user interaction. `booking_form_submit` marked as a Conversion event in GA4.
+
+---
+
+## Decision: Verify Google Search Console ownership via HTML meta tag
+
+**Date:** 2026-09-08
+**Context:** Google Search Console requires ownership verification before surfacing search performance data or accepting sitemap submissions. GTM-based verification failed because Next.js App Router injects its own `<head>` content before custom scripts, causing Google to reject the snippet placement.
+**Decision:** Use the **HTML tag verification method** by adding a `verification` field to the `metadata` export in `app/layout.tsx`:
+```ts
+verification: {
+  google: "bIU_3mUD1G1EGjcRC63DMw95FXFOv6xbHUjLTXphA4w",
+},
+```
+**Reason:** Next.js App Router's `metadata.verification.google` field injects the `<meta name="google-site-verification">` tag in the correct position in `<head>` at build time, which Google's verifier reliably detects. This approach requires no extra dependencies and no manual `<head>` manipulation.
+**Result:** Search Console reported "Ownership auto verified" immediately after deploy.
+
+---
+
+## Decision: Add sitemap via Next.js built-in `app/sitemap.ts`
+
+**Date:** 2026-09-08
+**Context:** The site had no `sitemap.xml`, making it harder for Googlebot to discover and index all pages. External sitemap packages (e.g. `next-sitemap`) were considered but add unnecessary dependencies for a small site.
+**Decision:** Create `app/sitemap.ts` using Next.js App Router's built-in sitemap support (`MetadataRoute.Sitemap`). Include three URLs: `/` (priority 1.0, weekly), `/tours` (priority 0.8, weekly), `/contact` (priority 0.5, monthly). Submit the resulting `https://www.sherrychang318.com/sitemap.xml` to Google Search Console.
+**Reason:** The built-in `sitemap.ts` route handler requires no extra packages, integrates with the existing App Router architecture, and can be extended dynamically in future (e.g. pulling tour URLs from a database). It is the approach recommended by Next.js for App Router projects.
+**Result:** `https://www.sherrychang318.com/sitemap.xml` returns valid XML covering all three pages. Sitemap submitted to Search Console.
