@@ -1,13 +1,37 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-
-export const metadata = {
-  title: "Day Tours Coming Soon — Sherry's Food Tour",
-  description:
-    "Discover Taiwan by daylight with Sherry's upcoming day tours. Explore culture, nature, and authentic experiences.",
-};
+import { useState } from "react";
 
 export default function DayTourPage() {
+  const [emailValue, setEmailValue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emailValue.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/early-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailValue }),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        setEmailValue("");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <main className="flex-1">
         {/* ── Hero Section ────────────────────────────────────── */}
@@ -155,20 +179,34 @@ export default function DayTourPage() {
                 Get Early Access
               </h3>
 
-              {/* Email Input */}
-              <div className="mb-6">
-                <input
-                  type="email"
-                  placeholder="Your@email.com"
-                  className="w-full px-6 sm:px-8 py-4 sm:py-6 text-xl sm:text-2xl lg:text-xl font-sans text-black bg-white rounded-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ffd700]"
-                  required
-                />
-              </div>
+              {submitted ? (
+                <p className="text-lg sm:text-xl lg:text-xl font-sans text-white">
+                  Thanks! We&apos;ll notify you when Day Tours launch.
+                </p>
+              ) : (
+                <>
+                  {/* Email Input */}
+                  <div className="mb-6">
+                    <input
+                      type="email"
+                      placeholder="Your@email.com"
+                      value={emailValue}
+                      onChange={(e) => setEmailValue(e.target.value)}
+                      className="w-full px-6 sm:px-8 py-4 sm:py-6 text-xl sm:text-2xl lg:text-xl font-sans text-black bg-white rounded-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ffd700]"
+                      required
+                    />
+                  </div>
 
-              {/* Notify Button */}
-              <button className="w-full px-6 sm:px-8 py-4 sm:py-6 text-lg sm:text-xl lg:text-xl font-sans text-white border-2 border-white rounded-lg hover:bg-white hover:text-black transition-colors duration-300">
-                Notify me when Day Tours launch
-              </button>
+                  {/* Notify Button */}
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className="w-full px-6 sm:px-8 py-4 sm:py-6 text-lg sm:text-xl lg:text-xl font-sans text-white border-2 border-white rounded-lg hover:bg-white hover:text-black transition-colors duration-300 disabled:opacity-70"
+                  >
+                    {isSubmitting ? "Submitting..." : "Notify me when Day Tours launch"}
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Please Reach Out Section */}

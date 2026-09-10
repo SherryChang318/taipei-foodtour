@@ -9,7 +9,7 @@ function getAuth() {
 }
 
 export async function appendToSheet(
-  sheetName: "Bookings" | "Enquiries",
+  sheetName: "Bookings" | "Enquiries" | "Early Access (DayTour)",
   values: (string | number)[]
 ) {
   const auth = getAuth();
