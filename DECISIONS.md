@@ -322,3 +322,86 @@ verification: {
 **Decision:** Create `app/sitemap.ts` using Next.js App Router's built-in sitemap support (`MetadataRoute.Sitemap`). Include three URLs: `/` (priority 1.0, weekly), `/tours` (priority 0.8, weekly), `/contact` (priority 0.5, monthly). Submit the resulting `https://www.sherrychang318.com/sitemap.xml` to Google Search Console.
 **Reason:** The built-in `sitemap.ts` route handler requires no extra packages, integrates with the existing App Router architecture, and can be extended dynamically in future (e.g. pulling tour URLs from a database). It is the approach recommended by Next.js for App Router projects.
 **Result:** `https://www.sherrychang318.com/sitemap.xml` returns valid XML covering all three pages. Sitemap submitted to Search Console.
+
+---
+
+## Decision: Add Early Access form for Day Tour page
+
+**Date:** 2026-09-10
+**Context:** The Day Tour landing page at `/day-tour/page.tsx` had a static "Get Early Access" section with a non-functional email input and button. Users could not sign up to be notified when day tours launch, and there was no way to collect early access interest.
+**Decision:** Convert the Day Tour page to a client component (`"use client"`) and implement a functional early access signup flow:
+1. Create `/app/api/early-access/route.ts` — POST endpoint that validates the email, sends a notification to `RECIPIENT_EMAIL` via Resend, and logs the signup to Google Sheets sheet "Early Access (DayTour)"
+2. Add client state to `/app/day-tour/page.tsx` (`emailValue`, `isSubmitting`, `submitted`) to manage form input and submission states
+3. Make the email input controlled and add a click handler to the button that POSTs to `/api/early-access`
+4. On success, replace the form with the message "Thanks! We'll notify you when Day Tours launch."
+
+Follow the same pattern as `/app/api/contact/route.ts` for Resend configuration and error handling.
+**Reason:** Users need a way to express interest in future day tours; collecting emails enables Sherry to build a notification list. Reusing the existing Resend + Google Sheets pattern keeps the backend consistent across all three forms (Contact, Booking, Early Access). The client-side UX is familiar from standard form submissions.
+**Constraints:** Email validation is minimal (non-empty string check); no format validation is required since Resend will handle bounce diagnostics. Sheets write failure is logged but does not block email delivery or the user's success response.
+**Result:** `/app/api/early-access/route.ts` accepts POST requests with `{ email: string }`, sends admin notification to `RECIPIENT_EMAIL` with subject "📩 New Day Tour Early Access Sign-up", appends `[timestamp, email]` to Google Sheets, and returns `{ success: true }`. The Day Tour page form now shows "Submitting..." while the request is in flight and "Thanks! We'll notify you when Day Tours launch." on success.
+
+---
+
+## Decision: Confirm backend form architecture (Contact, Booking, Early Access)
+
+**Date:** 2026-09-10
+**Context:** Three forms are now live across the site, each with its own API route, email flow, and Google Sheets integration. This decision confirms the architectural pattern and centralizes it as a reference for future form additions.
+**Decision:** Standardize all form submissions (Contact, Booking, Early Access) to follow the same backend pattern:
+1. **Form submission** → client component POSTs `{ field1, field2, ... }` to `/app/api/<form-name>/route.ts`
+2. **API route:**
+   - Validate input (minimal inline validation; Zod for Contact/Booking forms)
+   - Send admin notification email to `process.env.RECIPIENT_EMAIL` via Resend
+   - Append a row to Google Sheets using `appendToSheet()` from `/app/lib/googleSheets.ts`
+   - Return `{ success: true }` on success or `{ success: false, message: "..." }` with status 500 on error
+3. **Google Sheets:** Timestamp (Asia/Taipei) + all form fields as columns, newest rows first (via `INSERT_ROWS` option)
+4. **Email from:** `noreply@sherrychang318.com` (verified custom domain in Resend)
+5. **Error handling:** Sheets write failure never blocks email send or success response (try/catch with console logging only)
+
+**Reason:** A consistent pattern across all forms reduces cognitive load when adding new forms, makes the codebase easier to maintain, and ensures reliable behavior (emails always send, Sheets logging is best-effort). The three existing forms confirm this pattern works in production.
+**Files affected:**
+- Contact form (`/app/components/BookingForm.tsx` → `/app/api/contact/route.ts` → "Enquiries" sheet)
+- Booking form (`/app/booking/page.tsx` → `/app/api/booking/route.ts` → "Bookings" sheet)
+- Early Access form (`/app/day-tour/page.tsx` → `/app/api/early-access/route.ts` → "Early Access (DayTour)" sheet)
+- Google Sheets: https://docs.google.com/spreadsheets/d/1boQ3Wz-VNZyTQm1q2BPNSpFgvGDDjEfbInDmP8KMjd8
+**Result:** The backend architecture is confirmed. Future forms should follow the same API route + Resend + Google Sheets pattern. `appendToSheet()` type signature updated to include `"Early Access (DayTour)"` as a valid sheet name.
+
+---
+
+## Decision: Move GA4 property to dedicated "Sherry Food Tour" account
+
+**Date:** 2026-09-10
+**Context:** The GA4 property (Measurement ID `G-CN6XTV6X0D`) was originally created in a shared personal analytics account (emmaycchen.com). For clarity and to separate business analytics from personal projects, Sherry's property needed to move to its own dedicated GA4 account.
+**Decision:** Move the existing GA4 property (`G-CN6XTV6X0D`) from the shared account to a new **"Sherry Food Tour"** GA4 account (separate from emmaycchen.com). The Measurement ID remains unchanged; no code updates are required.
+**Process:**
+1. Create new GA4 account "Sherry Food Tour"
+2. Move property 552653185 (Measurement ID `G-CN6XTV6X0D`) to the new account
+3. A temporary property "Sherry Food Tour temp" was created during the transfer process and can be deleted
+
+**Reason:** A dedicated account keeps Sherry's analytics isolated and simplifies future reporting and permissions. The unchanged Measurement ID means no code changes are needed — GTM continues sending events to the same property without modification.
+**Result:** GA4 property `G-CN6XTV6X0D` is now in the dedicated "Sherry Food Tour" account. The GTM container (`GTM-PN4625P9`) continues to send events without any reconfiguration.
+
+---
+
+## Decision: Fix mobile responsiveness in Hot Tours page and image filename casing
+
+**Date:** 2026-09-10
+**Context:** Two bugs emerged during mobile testing:
+1. "The Difference" section on `/app/hot-tours/page.tsx` had excessive left/right padding on mobile, causing text to wrap awkwardly
+2. Hot Tours "We also offer..." call-to-action bar was left-aligned on mobile instead of right-aligned
+3. Testimonials section arrows were hidden on mobile due to responsive overflow issues
+4. Image filename `pancake.JPG` (uppercase) worked in local development but failed on Vercel (Linux is case-sensitive)
+
+**Decision:**
+1. Fix "The Difference" section: center it on mobile, reduce left/right padding
+2. Fix "We also offer..." bar: use `self-end` for right alignment, reduce text size to `text-[14px] md:text-[16px]`
+3. Move testimonials arrows to bottom row (same styling as HotTours section) to ensure visibility on mobile
+4. Rename `pancake.JPG` to `pancake.jpg` throughout the codebase
+
+**Reason:**
+- Excessive padding wastes mobile screen real estate; centering and smaller padding improve mobile readability
+- Right alignment is more visually balanced for the call-to-action bar
+- Testimonials arrows are UI elements and should be visible at all breakpoints
+- Linux (production) is case-sensitive; macOS (development) is case-insensitive. All image filenames must use lowercase extensions.
+
+**Constraints:** Image filename changes must be reflected in all references (code and Git); using uppercase extensions in development is a hidden bug that only surfaces in production.
+**Result:** `/app/hot-tours/page.tsx` now renders correctly on mobile with proper padding, alignment, and visible interactive elements. Image references use lowercase `pancake.jpg` consistently across all files. The site is mobile-ready and production-safe.

@@ -5,8 +5,8 @@ import ObfuscatedMailLink from "./ObfuscatedMailLink";
 const sitemap = [
   [
     { label: "About Me", href: "/#about" },
-    { label: "Food Tour", href: "/#tours" },
-    { label: "Day Tour", href: "/day-tour" },
+    { label: "Food Tours", href: "/#tours" },
+    { label: "Day Tours", href: "/day-tour" },
   ],
   [
     { label: "FAQs", href: "/faqs" },
@@ -102,7 +102,7 @@ export default function Footer() {
 
         <div className="flex items-center gap-2 pb-10 text-sm text-white/90">
           <span aria-hidden>©</span>
-          <p>2026 Taiwan Foodie - Sherry&rsquo;s Personal Tour</p>
+          <p>2026 Taiwan Foodie - Sherry&rsquo;s Private Tours</p>
         </div>
       </div>
     </footer>

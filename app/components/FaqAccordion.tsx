@@ -19,7 +19,7 @@ const faqs: { question: string; answer: React.ReactNode }[] = [
   {
     question: "Are all your tours in English?",
     answer:
-      "All our tours are currently run in English, although of course our guides speak the local language (and will be happy to teach you a bit of the basics if you wish.",
+      "All our tours are currently run in English, although of course our guides speak the local language (and will be happy to teach you a bit of the basics if you wish.)",
   },
   {
     question: "Where does my tour start from?",

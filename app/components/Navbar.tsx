@@ -46,14 +46,14 @@ export default function Navbar() {
                   className="block px-4 py-2 text-left transition-opacity hover:opacity-70"
                   onClick={() => setToursOpen(false)}
                 >
-                  Food Tour
+                  Food Tours
                 </Link>
                 <Link
                   href="/day-tour"
                   className="block px-4 py-2 text-left transition-opacity hover:opacity-70"
                   onClick={() => setToursOpen(false)}
                 >
-                  Day Tour
+                  Day Tours
                 </Link>
               </div>
             )}

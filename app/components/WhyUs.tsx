@@ -7,7 +7,7 @@ const features = [
     icon: "/images/why-pin.svg",
     iconW: 50,
     iconH: 71,
-    title: "Hidden gems the Taxi Drivers Eat At",
+    title: "Hidden Gems the Taxi Drivers Eat At",
     body: "We skip the busy night market main drags and take you to the hole-in-the-wall stalls, family kitchens, and neighbourhood favourites that only the locals know about",
   },
   {
@@ -22,7 +22,7 @@ const features = [
     iconW: 101,
     iconH: 79,
     title: "More Bites, More Flavors and More Variety",
-    body: "Smaller group sizes mean we can squeeze into spots bigger tours can't. You'll sample 7+ dishes across different neighbourhoods — from Hakka comfort food to modern Taiwanese fusion",
+    body: "Smaller group sizes mean we can squeeze into spots bigger tours can't. You'll sample 7+ dishes across different cultures — from Hakka comfort food to modern Taiwanese fusion",
   },
   {
     icon: "/images/why-language.png",

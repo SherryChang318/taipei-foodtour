@@ -99,7 +99,7 @@ export default function Hero() {
             className="h-[26px] w-[26px] shrink-0"
           />
           <span className="truncate font-quicksand text-[16px] font-bold leading-none text-white md:text-[20px]">
-            Go to Day Tour
+            Go to Day Tours
           </span>
         </Link>
         <Image
