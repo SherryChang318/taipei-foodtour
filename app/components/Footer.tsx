@@ -39,13 +39,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-10 py-12 md:grid-cols-[auto_1fr_auto] md:items-start md:gap-16 lg:py-16">
           {/* Logo */}
           <div className="flex items-start">
-            <Image
-              src="/images/logo.png"
-              alt="Sherry's Food Tour"
-              width={182}
-              height={182}
-              className="h-28 w-28 object-contain lg:h-[182px] lg:w-[182px]"
-            />
+            <Link href="/" className="block h-28 w-28 lg:h-[182px] lg:w-[182px]">
+              <Image
+                src="/images/logo.png"
+                alt="Sherry's Food Tour"
+                width={182}
+                height={182}
+                className="h-28 w-28 object-contain lg:h-[182px] lg:w-[182px]"
+              />
+            </Link>
           </div>
 
           {/* Sitemap */}
