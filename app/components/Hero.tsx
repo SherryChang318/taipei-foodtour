@@ -57,6 +57,22 @@ const stats = [
   { numeric: 50, suffix: "+", label: "Tours", delay: 300 },
 ];
 
+type StatItemProps = (typeof stats)[number] & { triggered: boolean };
+
+function StatItem({ numeric, suffix, label, delay, triggered }: StatItemProps) {
+  const count = useCountUp(numeric, 1800, delay, triggered);
+  return (
+    <li className="flex flex-col items-start border-l border-white/70 pl-4 lg:pl-[18px]">
+      <span className="font-bold leading-none text-2xl sm:text-3xl lg:text-[32px]">
+        {count}{suffix}
+      </span>
+      <span className="mt-2 font-bold text-sm sm:text-lg lg:text-[24px]">
+        {label}
+      </span>
+    </li>
+  );
+}
+
 export default function Hero() {
   const ulRef = useRef<HTMLUListElement>(null);
   const [triggered, setTriggered] = useState(false);
@@ -155,37 +171,9 @@ export default function Hero() {
             lg:mt-10 lg:gap-[120px]
           "
         >
-          {stats.map((stat) => {
-            const count = useCountUp(stat.numeric, 1800, stat.delay, triggered);
-            return (
-              <li
-                key={stat.label}
-                className="flex flex-col items-start border-l border-white/70 pl-4 lg:pl-[18px]"
-              >
-                <span
-                  className="
-                    font-bold leading-none
-                    text-2xl
-                    sm:text-3xl
-                    lg:text-[32px]
-                  "
-                >
-                  {count}
-                  {stat.suffix}
-                </span>
-                <span
-                  className="
-                    mt-2 font-bold
-                    text-sm
-                    sm:text-lg
-                    lg:text-[24px]
-                  "
-                >
-                  {stat.label}
-                </span>
-              </li>
-            );
-          })}
+          {stats.map((stat) => (
+            <StatItem key={stat.label} {...stat} triggered={triggered} />
+          ))}
         </ul>
       </div>
     </section>
