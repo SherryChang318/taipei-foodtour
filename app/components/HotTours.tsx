@@ -46,15 +46,15 @@ function TourCard({
   variant?: Variant;
 }) {
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex h-full w-full flex-col transition-transform duration-300 hover:-translate-y-1.5">
       <Link href={`/hot-tours/${tour.slug}`}>
-        <div className="relative aspect-[421/382] w-full overflow-hidden rounded-[12px] cursor-pointer">
+        <div className="group relative aspect-[421/382] w-full overflow-hidden rounded-[12px] cursor-pointer">
           <Image
             src={tour.image}
             alt={tour.title}
             fill
             sizes="(max-width: 1024px) 100vw, 33vw"
-            className="object-cover"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
       </Link>

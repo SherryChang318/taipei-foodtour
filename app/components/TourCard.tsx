@@ -18,15 +18,15 @@ export type Tour = {
 
 export default function TourCard({ tour }: { tour: Tour }) {
   return (
-    <article className="flex h-full flex-col">
+    <article className="flex h-full flex-col transition-transform duration-300 hover:-translate-y-1.5">
       {/* Image — 415×420, 12px radius per Figma */}
-      <div className="relative aspect-[415/420] w-full overflow-hidden rounded-[12px]">
+      <div className="group relative aspect-[415/420] w-full overflow-hidden rounded-[12px]">
         <Image
           src={tour.image}
           alt={tour.title}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 

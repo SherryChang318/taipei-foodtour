@@ -1,4 +1,6 @@
+'use client'
 import Image from "next/image";
+import { FadeIn } from './FadeIn'
 
 export default function MeetFoodie() {
   return (
@@ -62,6 +64,7 @@ export default function MeetFoodie() {
           </div>
 
           {/* Text */}
+          <FadeIn direction="right" delay={0.15}>
           <div>
             <h3 className="text-2xl sm:text-3xl lg:text-[38px]">Sherry Chang</h3>
             <p className="mt-5 text-base italic leading-snug lg:mt-6 lg:text-[18px] lg:leading-normal">
@@ -77,6 +80,7 @@ export default function MeetFoodie() {
               experiences that go far beyond the typical tourist trail.
             </p>
           </div>
+          </FadeIn>
         </div>
       </div>
     </section>

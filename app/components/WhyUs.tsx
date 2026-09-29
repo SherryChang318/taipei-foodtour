@@ -1,4 +1,6 @@
+'use client'
 import Image from "next/image";
+import { FadeIn } from "./FadeIn";
 
 // Icon sources are kept as-is; sizes match the Figma heights (71/75/79/84)
 // with each asset's own aspect ratio preserved to avoid distortion.
@@ -38,6 +40,7 @@ export default function WhyUs() {
     <section className="w-full bg-white text-black">
       <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 gap-10 px-3 py-14 sm:px-10 md:grid-cols-2 md:py-16 lg:grid-cols-[1.3fr_repeat(4,1fr)] lg:items-start lg:gap-8 lg:px-[69px] lg:py-20">
         {/* Intro — left-aligned */}
+        <FadeIn direction="up">
         <div className="text-center md:text-left md:col-span-2 lg:col-span-1">
           <p className="font-sans text-[18px] font-normal text-black md:text-[22px]">
             THE DIFFERENCE
@@ -51,10 +54,12 @@ export default function WhyUs() {
             The reasons our guests keep coming back, and bring their friends too!
           </p>
         </div>
+        </FadeIn>
 
         {/* Feature columns */}
-        {features.map((f) => (
-          <div key={f.title} className="flex flex-col items-center">
+        {features.map((f, i) => (
+          <FadeIn key={f.title} delay={i * 0.1} direction="up">
+          <div className="flex flex-col items-center">
             <div className="flex h-[84px] items-end justify-center">
               <Image
                 src={f.icon}
@@ -72,6 +77,7 @@ export default function WhyUs() {
               {f.body}
             </p>
           </div>
+          </FadeIn>
         ))}
       </div>
     </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FadeIn } from "./FadeIn";
 
 const testimonials = [
   {
@@ -102,9 +103,15 @@ export default function Testimonials() {
           </button>
 
           <div className="mt-12 hidden items-center gap-6 lg:grid lg:grid-cols-3">
+            <FadeIn direction="left">
             <Card t={testimonials[leftIdx]} variant="side" />
+            </FadeIn>
+            <FadeIn direction="up" delay={0.1}>
             <Card t={testimonials[center]} variant="center" />
+            </FadeIn>
+            <FadeIn direction="right">
             <Card t={testimonials[rightIdx]} variant="side" />
+            </FadeIn>
           </div>
 
           <button
@@ -117,6 +124,7 @@ export default function Testimonials() {
           </button>
 
           {/* Mobile / tablet: single centered card with dots and arrows */}
+          <FadeIn direction="up">
           <div className="mt-10 lg:hidden">
           <Card t={testimonials[center]} variant="center" />
           <div className="mt-6 flex items-center justify-center gap-6">
@@ -151,6 +159,7 @@ export default function Testimonials() {
             </button>
           </div>
           </div>
+          </FadeIn>
         </div>
       </div>
     </section>
