@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useScroll, useTransform, motion } from "framer-motion";
 
 const easeOut = (t: number): number => {
   return 1 - Math.pow(1 - t, 3);
@@ -73,7 +74,14 @@ function StatItem({ numeric, suffix, label, delay, triggered }: StatItemProps) {
   );
 }
 
-export default function Hero() {
+export default function ParallaxHero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  
   const ulRef = useRef<HTMLUListElement>(null);
   const [triggered, setTriggered] = useState(false);
 
@@ -93,15 +101,20 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative isolate h-screen w-full overflow-hidden text-white">
-      <Image
-        src="/images/hero.png"
-        alt="Crowded Taipei food market at night"
-        fill
-        priority
-        sizes="100vw"
-        className="-z-10 object-cover object-center"
-      />
+    <section ref={sectionRef} className="relative isolate h-screen w-full overflow-hidden text-white">
+      <motion.div
+        style={{ y: bgY }}
+        className="absolute inset-0 -z-10 scale-110"
+      >
+        <Image
+          src="/images/hero.png"
+          alt="Crowded Taipei food market at night"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      </motion.div>
       <div className="absolute inset-0 -z-10 bg-black/30" />
 
       {/* Go to Day Tour — top-left overlay */}

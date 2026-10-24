@@ -1,5 +1,5 @@
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
+import ParallaxHero from "./components/ParallaxHero";
 import WhyUs from "./components/WhyUs";
 import HotTours from "./components/HotTours";
 import TheDeets from "./components/TheDeets";
@@ -13,7 +13,7 @@ export default function Home() {
     <>
       <Navbar />
       <main className="flex-1">
-        <Hero />
+        <ParallaxHero />
         <WhyUs />
         <HotTours />
         <TheDeets />
